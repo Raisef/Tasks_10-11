@@ -1,0 +1,14 @@
+C:\Users\KrynochkinAK\Downloads\Task6\UsersBase.Inerfaces\bin\Debug\UsersBase.Inerfaces.dll
+C:\Users\KrynochkinAK\Downloads\Task6\UsersBase.Inerfaces\bin\Debug\UsersBase.Inerfaces.pdb
+C:\Users\KrynochkinAK\Downloads\Task6\UsersBase.Inerfaces\bin\Debug\UsersBase.Entities.dll
+C:\Users\KrynochkinAK\Downloads\Task6\UsersBase.Inerfaces\bin\Debug\UsersBase.Entities.pdb
+C:\Users\KrynochkinAK\Downloads\Task6\UsersBase.Inerfaces\obj\Debug\UsersBase.Inerfaces.csprojResolveAssemblyReference.cache
+C:\Users\KrynochkinAK\Downloads\Task6\UsersBase.Inerfaces\obj\Debug\UsersBase.Inerfaces.dll
+C:\Users\KrynochkinAK\Downloads\Task6\UsersBase.Inerfaces\obj\Debug\UsersBase.Inerfaces.pdb
+D:\VisualStudio\Projects\Task6\UsersBase.Inerfaces\bin\Debug\UsersBase.Inerfaces.dll
+D:\VisualStudio\Projects\Task6\UsersBase.Inerfaces\bin\Debug\UsersBase.Inerfaces.pdb
+D:\VisualStudio\Projects\Task6\UsersBase.Inerfaces\bin\Debug\UsersBase.Entities.dll
+D:\VisualStudio\Projects\Task6\UsersBase.Inerfaces\bin\Debug\UsersBase.Entities.pdb
+D:\VisualStudio\Projects\Task6\UsersBase.Inerfaces\obj\Debug\UsersBase.Inerfaces.csprojResolveAssemblyReference.cache
+D:\VisualStudio\Projects\Task6\UsersBase.Inerfaces\obj\Debug\UsersBase.Inerfaces.dll
+D:\VisualStudio\Projects\Task6\UsersBase.Inerfaces\obj\Debug\UsersBase.Inerfaces.pdb

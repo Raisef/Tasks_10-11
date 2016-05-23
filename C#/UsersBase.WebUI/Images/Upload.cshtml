@@ -1,0 +1,126 @@
+﻿@using UsersBase.WebUI;
+@using UsersBase.ExceptionLogger;
+@{LogicManager logicManager = LogicManager.Instance;}
+@{
+    if (!IsPost || !User.IsInRole("Admin"))
+    {
+        Response.SetStatus(HttpStatusCode.NotFound);
+        return;
+    }
+
+    var file = Request.Files["uploaded"];
+
+    if (file == null || file.ContentLength == 0)
+    {
+        Response.SetStatus(HttpStatusCode.BadRequest);
+        return;
+    }
+    byte[] imageContent = new byte[file.ContentLength];
+
+    file.InputStream.Read(imageContent, 0, imageContent.Length);
+
+    var imageType = file.ContentType;
+    var from = Request["imageFrom"];
+
+    switch (from)
+    {
+        case "user":
+            {
+
+                try
+                {
+                    var id = int.Parse(Request["identify"]);
+                    if(logicManager.UserLogic().SetImage(id, imageContent, imageType))
+                    {
+                        Response.Redirect("~");
+                        return;
+                    }
+
+                }
+                catch(ArgumentNullException ex)
+                {
+                    ExceptionLog.LogError($"PL-{ex.Source}", $"Error on parsing id: {ex.Message}", DateTime.Now);
+                    Response.SetStatus(HttpStatusCode.BadRequest);
+                }
+                catch(FormatException ex)
+                {
+                    ExceptionLog.LogError($"PL-{ex.Source}", $"Error on parsing id: {ex.Message}", DateTime.Now);
+                    Response.SetStatus(HttpStatusCode.BadRequest);
+                }
+                catch(IOException ex)
+                {
+                    ExceptionLog.LogError($"PL-{ex.Source}", $"Error on uploading image: {ex.Message}", DateTime.Now);
+                    Response.SetStatus(HttpStatusCode.BadRequest);
+                }
+                Response.SetStatus(HttpStatusCode.BadRequest);
+                return;
+
+            }
+
+        case "award":
+            {
+                try
+                {
+                    var id = int.Parse(Request["identify"]);
+                    if (logicManager.AwardLogic().SetImage(id, imageContent, imageType))
+                    {
+                        Response.Redirect("~/Awards");
+                        return;
+                    }
+                }
+                catch (ArgumentNullException ex)
+                {
+                    ExceptionLog.LogError($"PL-{ex.Source}", $"Error on parsing id: {ex.Message}", DateTime.Now);
+                    Response.SetStatus(HttpStatusCode.BadRequest);
+                }
+                catch (FormatException ex)
+                {
+                    ExceptionLog.LogError($"PL-{ex.Source}", $"Error on parsing id: {ex.Message}", DateTime.Now);
+                    Response.SetStatus(HttpStatusCode.BadRequest);
+                }
+                catch (IOException ex)
+                {
+                    ExceptionLog.LogError($"PL-{ex.Source}", $"Error on uploading image: {ex.Message}", DateTime.Now);
+                    Response.SetStatus(HttpStatusCode.BadRequest);
+                }
+                Response.SetStatus(HttpStatusCode.BadRequest);
+                return;
+            }
+
+        case "app_user":
+            {
+                try
+                {
+                    var login = Request["identify"];
+                    if (logicManager.AppUserLogic().SetImage(login, imageContent, imageType))
+                    {
+                        Response.Redirect("~/Admin");
+                        return;
+                    }
+
+                }
+
+                catch (ArgumentNullException ex)
+                {
+                    ExceptionLog.LogError($"PL-{ex.Source}", $"Error on parsing id: {ex.Message}", DateTime.Now);
+                    Response.SetStatus(HttpStatusCode.BadRequest);
+                }
+                catch (FormatException ex)
+                {
+                    ExceptionLog.LogError($"PL-{ex.Source}", $"Error on parsing id: {ex.Message}", DateTime.Now);
+                    Response.SetStatus(HttpStatusCode.BadRequest);
+                }
+                catch (IOException ex)
+                {
+                    ExceptionLog.LogError($"PL-{ex.Source}", $"Error on uploading image: {ex.Message}", DateTime.Now);
+                    Response.SetStatus(HttpStatusCode.BadRequest);
+                }
+                Response.SetStatus(HttpStatusCode.BadRequest);
+                return;
+            }
+        default:
+            Response.SetStatus(HttpStatusCode.BadRequest);
+            return;
+    }
+
+}

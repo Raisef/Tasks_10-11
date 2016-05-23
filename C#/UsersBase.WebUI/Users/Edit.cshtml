@@ -1,0 +1,155 @@
+﻿@using UsersBase.ExceptionLogger;
+@using UsersBase.Logic;
+@using UsersBase.LogicContracts;
+@using System.Configuration;
+@using System.Globalization;
+@using UsersBase.WebUI;
+
+@if (!IsPost || !User.IsInRole("Admin"))
+{
+    Response.SetStatus(HttpStatusCode.NotFound);
+    return;
+}
+
+@section styles{
+    <link href="~/Content/userEditStyle.css" rel="stylesheet" />
+}
+
+@section scripts{
+    <script src="~/scripts/jquery.validate.js"></script>
+    <script src="~/scripts/userEdit.js"></script>
+}
+
+@{
+    LogicManager logicManager;
+
+    try
+    {
+        logicManager = LogicManager.Instance;
+    }
+    catch (ConfigurationErrorsException ex)
+    {
+        ExceptionLog.LogError($"PL-{ex.Source}", $"Error in configurations: {ex.Message}", DateTime.Now);
+        <text>Critical error: Error in configuration file.</text>
+        return;
+    }
+    bool failed = false;
+    var stringId = Request["id"];
+    int id;
+    if (string.IsNullOrWhiteSpace(stringId) || !int.TryParse(stringId, out id) || id <= 0)
+    {
+        Response.SetStatus(HttpStatusCode.BadRequest);
+        return;
+    }
+
+    var userName = Request["newName"];
+    var dateString = Request["newDate"];
+    var checkbox = Request["ChangeList"];
+
+    if (checkbox != null) {
+        switch (checkbox)
+        {
+            case "name,date":
+                {
+                    string newName = string.IsNullOrWhiteSpace(userName) ||
+        userName[0] == ' ' || userName.EndsWith(" ") ? null : userName;
+
+                    DateTime birthDate = new DateTime();
+                    if (newName == null &&
+                        (!DateTime.TryParse(dateString, CultureInfo.CurrentCulture, DateTimeStyles.None, out birthDate) ||
+                        birthDate > DateTime.Now.AddYears(-3)))
+                    {
+                        failed = true;
+                    }
+                    else
+                    {
+                        if (logicManager.UserLogic().Edit(id, newName, birthDate))
+                        {
+                            Response.Redirect("~");
+                            return;
+                        }
+
+                        Response.SetStatus(HttpStatusCode.NotFound);
+                        return;
+                    }
+                }
+                break;
+
+            case "date":
+                {
+                    DateTime birthDate = new DateTime();
+                    if (!DateTime.TryParse(dateString, CultureInfo.CurrentCulture, DateTimeStyles.None, out birthDate) ||
+                        birthDate > DateTime.Now.AddYears(-3))
+                    {
+                        failed = true;
+                    }
+                    else {
+                        if (logicManager.UserLogic().Edit(id, userBirthDate: birthDate))
+                        {
+                            Response.Redirect("~");
+                            return;
+                        }
+
+                        Response.SetStatus(HttpStatusCode.NotFound);
+                        return;
+                    }
+                }
+                break;
+
+            case "name":
+                {
+                    if (string.IsNullOrWhiteSpace(userName) ||
+            userName[0] == ' ' || userName.EndsWith(" "))
+                    {
+                        failed = true;
+                    }
+                    else {
+                        if (logicManager.UserLogic().Edit(id, userName: userName))
+                        {
+                            Response.Redirect("~");
+                            return;
+                        }
+
+                        Response.SetStatus(HttpStatusCode.NotFound);
+                        return;
+                    }
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+}
+
+
+@if (failed)
+{
+        <div class="panel panel-danger panel-error"><span>Incorrect input.</span></div>
+}
+
+<div class="panel panel-default panel-edit">
+    <form action="~/Users/Edit" method="post" id="UserEdit">
+        <input type="hidden" name="id" value="@id" />
+        <div class="set-changes">
+            <span>What do you want to change? <span class="small">(At least 1)</span></span>
+            <label>
+                <input type="checkbox" id="NameCheckbox" value="name" name="changeList" required/>
+                Name
+            </label>
+            <label>
+                <input type="checkbox" id="DateCheckbox" value="date" name="changeList" required/>
+                Birth date
+            </label>
+        </div>
+        <div class="input-field">
+            <label for="NameField">Name<span>(At least 2 characters)</span></label>
+            <input id="NameField" name="newName" minlength="2" type="text"/>
+        </div>
+        <div class="input-field">
+            <label for="BirthDateField">Birth date<span>(Minimum @DateTime.Now.AddYears(-3).ToShortDateString())</span></label>
+            <input id="BirthDateField" name="newDate" type="date"/>
+        </div>
+        <input class="btn btn-default btn-success" type="submit" value="Edit user" />
+    </form>
+</div>

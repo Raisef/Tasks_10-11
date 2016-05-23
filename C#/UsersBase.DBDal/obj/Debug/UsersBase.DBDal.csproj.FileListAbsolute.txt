@@ -1,0 +1,12 @@
+D:\VisualStudio\Task6_10\UsersBase.DBDal\bin\Debug\ErrorsLog.txt
+D:\VisualStudio\Task6_10\UsersBase.DBDal\bin\Debug\UsersBase.DBDal.dll
+D:\VisualStudio\Task6_10\UsersBase.DBDal\bin\Debug\UsersBase.DBDal.pdb
+D:\VisualStudio\Task6_10\UsersBase.DBDal\bin\Debug\UsersBase.DalContracts.dll
+D:\VisualStudio\Task6_10\UsersBase.DBDal\bin\Debug\UsersBase.Entities.dll
+D:\VisualStudio\Task6_10\UsersBase.DBDal\bin\Debug\UsersBase.ExceptionLogger.dll
+D:\VisualStudio\Task6_10\UsersBase.DBDal\bin\Debug\UsersBase.DalContracts.pdb
+D:\VisualStudio\Task6_10\UsersBase.DBDal\bin\Debug\UsersBase.Entities.pdb
+D:\VisualStudio\Task6_10\UsersBase.DBDal\bin\Debug\UsersBase.ExceptionLogger.pdb
+D:\VisualStudio\Task6_10\UsersBase.DBDal\obj\Debug\UsersBase.DBDal.csprojResolveAssemblyReference.cache
+D:\VisualStudio\Task6_10\UsersBase.DBDal\obj\Debug\UsersBase.DBDal.dll
+D:\VisualStudio\Task6_10\UsersBase.DBDal\obj\Debug\UsersBase.DBDal.pdb

@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4348C06C-7CE1-46F3-9D58-74908C12A9CD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>UsersBase.Logic</RootNamespace>
+    <AssemblyName>UsersBase.Logic</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppUserLogic.cs" />
+    <Compile Include="AwardLogic.cs" />
+    <Compile Include="ManagerDao.cs" />
+    <Compile Include="UserLogic.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\UsersBase.DalContracts\UsersBase.DalContracts.csproj">
+      <Project>{d1923f9d-3620-4261-b7d7-783eb09a4172}</Project>
+      <Name>UsersBase.DalContracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UsersBase.DBDal\UsersBase.DBDal.csproj">
+      <Project>{25a53034-5ffb-4e26-80ca-f836adc49623}</Project>
+      <Name>UsersBase.DBDal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UsersBase.Entities\UsersBase.Entities.csproj">
+      <Project>{9672c139-bf20-4b6c-b4de-294157e17ae5}</Project>
+      <Name>UsersBase.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UsersBase.ExceptionLogger\UsersBase.ExceptionLogger.csproj">
+      <Project>{f939d1a6-b024-474d-b93e-8e8e50217f66}</Project>
+      <Name>UsersBase.ExceptionLogger</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UsersBase.FileDal\UsersBase.FileDal.csproj">
+      <Project>{9715dc9b-711a-4a6a-9281-11c3846c84ae}</Project>
+      <Name>UsersBase.FileDal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UsersBase.LogicContracts\UsersBase.LogicContracts.csproj">
+      <Project>{779a2fee-8b84-4dfe-8d43-b09a6bc12951}</Project>
+      <Name>UsersBase.LogicContracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UsersBase.MemoryDal\UsersBase.MemoryDal.csproj">
+      <Project>{24901a9e-4bce-4f09-a001-b1f783c466eb}</Project>
+      <Name>UsersBase.MemoryDal</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

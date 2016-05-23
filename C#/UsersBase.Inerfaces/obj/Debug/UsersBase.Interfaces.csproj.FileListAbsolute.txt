@@ -1,0 +1,7 @@
+D:\VisualStudio\Projects\Task6\UsersBase.Inerfaces\bin\Debug\UsersBase.Inerfaces.dll
+D:\VisualStudio\Projects\Task6\UsersBase.Inerfaces\bin\Debug\UsersBase.Inerfaces.pdb
+D:\VisualStudio\Projects\Task6\UsersBase.Inerfaces\bin\Debug\UsersBase.Entities.dll
+D:\VisualStudio\Projects\Task6\UsersBase.Inerfaces\bin\Debug\UsersBase.Entities.pdb
+D:\VisualStudio\Projects\Task6\UsersBase.Inerfaces\obj\Debug\UsersBase.Interfaces.csprojResolveAssemblyReference.cache
+D:\VisualStudio\Projects\Task6\UsersBase.Inerfaces\obj\Debug\UsersBase.Inerfaces.dll
+D:\VisualStudio\Projects\Task6\UsersBase.Inerfaces\obj\Debug\UsersBase.Inerfaces.pdb

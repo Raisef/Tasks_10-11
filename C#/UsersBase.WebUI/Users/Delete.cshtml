@@ -1,0 +1,43 @@
+﻿@using UsersBase.ExceptionLogger;
+@using UsersBase.Logic;
+@using UsersBase.LogicContracts;
+@using System.Configuration;
+@using UsersBase.WebUI;
+
+@if (!IsPost)
+{
+    Response.SetStatus(HttpStatusCode.NotFound);
+    return;
+}
+
+@{
+    LogicManager logicManager;
+
+    try
+    {
+        logicManager = LogicManager.Instance;
+    }
+    catch (ConfigurationErrorsException ex)
+    {
+        ExceptionLog.LogError($"PL-{ex.Source}", $"Error in configurations: {ex.Message}", DateTime.Now);
+        <text>Critical error: Error in configuration file.</text>
+        return;
+    }
+
+    var stringId = Request["id"];
+    int id;
+    if (string.IsNullOrWhiteSpace(stringId) || !int.TryParse(stringId, out id))
+    {
+        Response.SetStatus(HttpStatusCode.BadRequest);
+        return;
+    }
+
+    if (logicManager.UserLogic().Delete(id))
+    {
+        Response.Redirect("~");
+        return;
+    }
+
+    Response.SetStatus(HttpStatusCode.NotFound);
+    return;
+}

@@ -1,0 +1,41 @@
+﻿.panel{
+    width: 400px;
+    margin: 100px auto;
+}
+
+.panel > form{
+    margin: 10px;
+    text-align: right;
+}
+
+
+.input-field{
+    margin: 20px 0;
+    height: 50px
+}
+
+.input-field > label:first-child{
+    float:left;
+    clear:right;
+}
+
+.input-field > input{
+    width: 160px;
+}
+
+label.error{
+    color:darkred;
+    font-size: small;
+    margin-top: 10px;
+    float:right;
+}
+
+.panel-error{
+    width: 350px;
+    margin: 30px auto;
+    padding: 5px;
+    color: white;
+    font-weight: 600;
+    text-align:center;
+    background-color: firebrick;
+}

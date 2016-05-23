@@ -1,0 +1,52 @@
+.panel-edit{
+    width: 400px;
+    margin: 100px auto;
+    box-shadow: 0px 0px 50px 0px;
+}
+
+.panel > form{
+    margin: 10px;
+    text-align: right;
+}
+
+.set-changes > span{
+    display: block;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.input-field{
+    margin: 20px 0;
+    height: 50px
+}
+
+.input-field > label:first-child{
+    float:left;
+    clear:right;
+}
+
+.input-field > input{
+    width: 160px;
+}
+
+label.error{
+    color:darkred;
+    font-size: small;
+    margin-top: 10px;
+    position: absolute;
+    margin-top: 20px; 
+}
+
+.panel-error{
+    width: 350px;
+    margin: 30px auto;
+    padding: 5px;
+    color: white;
+    font-weight: 600;
+    text-align:center;
+    background-color: firebrick;
+}
+
+.set-changes > label{
+    display: inline-block;
+}

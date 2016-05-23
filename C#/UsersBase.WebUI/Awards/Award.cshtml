@@ -1,0 +1,237 @@
+﻿@using UsersBase.Entities;
+@using UsersBase.ExceptionLogger;
+@using UsersBase.Logic;
+@using UsersBase.LogicContracts;
+@using System.Configuration;
+@using System.Globalization;
+@using System.Text;
+@using UsersBase.WebUI;
+
+@if (!User.IsInRole("Admin"))
+{
+    Response.SetStatus(HttpStatusCode.NotFound);
+    return;
+}
+ 
+@section styles{
+    <link href="~/Content/award.css" rel="stylesheet" />
+    }
+
+@section scripts{
+    <script src="~/scripts/jquery.validate.js"></script>
+    <script src="~/scripts/jquery.chained.min.js"></script>
+    <script src="~/scripts/award.js"></script>
+}
+
+
+
+
+@{
+    LogicManager logicManager;
+
+    try
+    {
+        logicManager = LogicManager.Instance;
+    }
+    catch (ConfigurationErrorsException ex)
+    {
+        ExceptionLog.LogError($"PL-{ex.Source}", $"Error in configurations: {ex.Message}", DateTime.Now);
+        <text>Critical error: Error in configuration file.</text>
+        return;
+    }
+    if (IsPost)
+    {
+        var toDo = Request["todo"];
+
+        switch (toDo)
+        {
+            case "award":
+                {
+                    var awardIdString = Request["award"];
+                    var usersIdString = Request["EmptyUsers"];
+                    if (string.IsNullOrWhiteSpace(usersIdString) || string.IsNullOrWhiteSpace(awardIdString))
+                    {
+                        break;
+                    }
+
+                    var awardId = int.Parse(awardIdString);
+                    var usersId = usersIdString.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    for (var i = 0; i < usersId.Length; i++)
+                    {
+                        var userId = int.Parse(usersId[i]);
+                        if (!logicManager.AwardLogic().RewardUser(userId, awardId))
+                        {
+                            Response.SetStatus(HttpStatusCode.BadRequest);
+                            return;
+                        }
+                    }
+                    Response.Redirect("~/Awards/Index");
+                    return;
+                }
+
+            case "remove":
+                {
+                    var awardIdString = Request["award"];
+                    var usersIdString = Request["AwardedUsers"];
+                    if (string.IsNullOrWhiteSpace(usersIdString))
+                    {
+                        break;
+                    }
+                    var awardId = int.Parse(awardIdString);
+                    var usersId = usersIdString.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    for (var i = 0; i < usersId.Length; i++)
+                    {
+                        var userId = int.Parse(usersId[i]);
+                        if (!logicManager.AwardLogic().DeleteUserAward(userId, awardId))
+                        {
+                            Response.SetStatus(HttpStatusCode.BadRequest);
+                            return;
+                        }
+                    }
+                    Response.Redirect("~/Awards/Index");
+                    return;
+                }
+        }
+
+    }
+
+
+
+    var action = Request["action"];
+
+
+    if (action == null)
+    {
+    <div class="work-type">
+        <a href="~/Awards/Award?action=award" class="btn btn-sm btn-success"><span>Award User</span></a>
+        <a href="~/Awards/Award?action=remove" class="btn btn-sm btn-success"><span>Remove award from user</span></a>
+    </div>
+}
+else if (action != "award" && action != "remove")
+{
+    Response.SetStatus(HttpStatusCode.NotFound);
+    return;
+}
+else
+{
+    var awards = logicManager.AwardLogic().GetAll();
+    var users = logicManager.UserLogic().GetAll();
+    if (action == "award")
+    {
+        <div class="work-type">
+            <a href="~/Awards/Award?action=remove" class="btn btn-sm btn-success"><span>Remove award from user</span></a>
+        </div>
+    }
+    else if (action == "remove")
+    {
+        <div class="work-type">
+            <a href="~/Awards/Award?action=award" class="btn btn-sm btn-success"><span>Award User</span></a>
+        </div>
+    }
+        <div class="panel panel-success panel-multiple-select">Multiple selection is available <span class="small">(Ctrl/Shift + Click)</span></div>
+          
+        <form class="chained-selects" action="~/Awards/Award" method="post">
+            <div class="awards-list">
+                <span class="strong-text">Awards</span>
+                <select id="Award" name="award" size="2">
+                    @if (awards != null)
+                    {
+                        foreach (var award in awards.OrderBy(award => award.Id))
+                        {
+                            <option value="@award.Id">@award.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+                <div class="awards-list">
+                    @{
+                        if (action == "award")
+                        {
+                            <span class="strong-text">Users without award</span>
+                            <input type="hidden" name="todo" value="award" />
+                            <select id="EmptyUsers" name="emptyUsers" size="2" multiple="multiple">
+                                @if (users != null)
+                                {
+                                    foreach (var user in users.OrderBy(user => user.Id))
+                                    {
+                                        var ownAwards = awards.Select(award =>
+                                        {
+                                            if (!award.Owners.ContainsKey(user.Id))
+                                            {
+                                                return award;
+                                            }
+                                            return null;
+                                        }).ToList();
+                                        if (ownAwards.Any(item => item != null))
+                                        {
+                                            string awardsClass = string.Empty;
+                                            var sb = new StringBuilder();
+                                            foreach (var award in ownAwards)
+                                            {
+                                                if (award != null)
+                                                {
+                                                    sb.Append(award.Id).Append(' ');
+                                                }
+                                            }
+                                            awardsClass = sb.Remove(sb.Length - 1, 1).ToString();
+                                            <option value="@user.Id" class="@awardsClass">@user.Name (@user.BirthDate.ToShortDateString())</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        }
+                        else if (action == "remove")
+                        {
+                            <input type="hidden" name="todo" value="remove" />
+                            <span class="strong-text">Users with award</span>
+                            <select id="AwardedUsers" name="awardedUsers" size="2" multiple="multiple">
+                                @if (users != null)
+                                {
+                                    foreach (var user in users.OrderBy(user => user.Id))
+                                    {
+                                        var ownAwards = awards.Select(award =>
+                                        {
+                                            if (award.Owners.ContainsKey(user.Id))
+                                            {
+                                                return award;
+                                            }
+                                            return null;
+                                        }).ToList();
+                                        if (ownAwards.Any(item => item != null))
+                                        {
+                                            string awardsClass = string.Empty;
+                                            var sb = new StringBuilder();
+                                            foreach (var award in ownAwards)
+                                            {
+                                                if (award != null)
+                                                {
+                                                    sb.Append(award.Id).Append(" ");
+                                                }
+                                            }
+                                            awardsClass = sb.Remove(sb.Length - 1, 1).ToString();
+                                            <option value="@user.Id" class="@awardsClass">@user.Name (@user.BirthDate.ToShortDateString())</option>
+                                        }
+                                    }
+
+                                }
+                            </select>
+                        }
+                    }
+                </div>
+                
+                <button type="submit" id="BtnSubmit" class="btn btn-warning">
+                    @if (action == "award")
+    {
+                        <text>Award</text>
+                    }
+                    else
+                    {
+                        <text>Remove award</text>
+                    }
+                </button>
+            </form>
+                    }
+}
+                    

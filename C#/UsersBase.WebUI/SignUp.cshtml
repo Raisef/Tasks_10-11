@@ -1,0 +1,87 @@
+﻿@using UsersBase.WebUI;
+@using System.Configuration;
+@using UsersBase.Entities;
+@using UsersBase.ExceptionLogger;
+
+@{
+    Page.Title = "Sign Up";
+    bool failed = false;
+}
+
+@section styles{
+    <link href="~/Content/SignUpForm.css" rel="stylesheet" />
+    }
+
+@section scripts{
+    <script src="~/scripts/SignUpScript.js"></script>
+    }
+
+@if (IsPost)
+{
+
+    LogicManager logicManager;
+
+    try
+    {
+        logicManager = LogicManager.Instance;
+    }
+    catch (ConfigurationErrorsException ex)
+    {
+        ExceptionLog.LogError($"PL-{ex.Source}", $"Error in configurations: {ex.Message}", DateTime.Now);
+        <text>Critical error: Error in configuration file.</text>
+        return;
+    }
+
+    var login = Request["login"];
+    var nick = Request["nickname"];
+    var pass = Request["password"];
+    var confirmPass = Request["confirm_password"];
+
+    if(!string.IsNullOrWhiteSpace(login) &&
+        !string.IsNullOrWhiteSpace(nick) && 
+        login != nick &&
+        !string.IsNullOrWhiteSpace(pass) &&
+        !string.IsNullOrWhiteSpace(confirmPass) &&
+        pass == confirmPass)
+    {
+        var result = logicManager.AppUserLogic().Create(login, pass, nick);
+        if (result > 0)
+        {
+            Response.Redirect("~");
+            return;
+        }
+        else if (result == 0)
+        {
+            Response.SetStatus(HttpStatusCode.BadRequest);
+            return;
+        }
+    }
+    failed = true;
+}
+
+@if (failed)
+{
+    <div class="panel panel-danger panel-error"><span>Incorrect input.</span></div>
+}
+<form class="form-2" action="~/SignUp" method="post">
+    <h1><span class="log-in">Sign Up</span></h1>
+    <p>
+        <label for="Login"><i class="icon-user"></i>Login<span class="small"> (At least 2 characters)</span></label>
+        <input type="text" name="login" placeholder="Login"  id="Login">
+    </p>
+    <p>
+        <label for="Nick"><i class="icon-user"></i>Nickname<span class="small"> (At least 2 characters and different from login)</span></label>
+        <input type="text" name="nickname" placeholder="Nickname" id="Nick">
+    </p>
+    <p>
+        <label for="Password"><i class="icon-lock"></i>Password</label>
+        <input class="showpassword" type="password" name="password" placeholder="Password" id="Password">
+    </p>
+    <p>
+        <label for="ConfirmPassword"><i class="icon-lock"></i>Confirm password</label>
+        <input class="showpassword" type="password" name="confirm_password" placeholder="Password" id="ConfirmPassword">
+    </p>
+    <p class="clearfix">
+        <input type="submit" name="submit" value="Sign Up">
+    </p>
+</form>

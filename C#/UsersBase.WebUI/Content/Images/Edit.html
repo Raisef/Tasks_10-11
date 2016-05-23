@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<!-- saved from url=(0033)http://localhost:55067/Users/Edit -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title></title>
+    <link href="./Edit_files/bootstrap.css" rel="stylesheet">
+    <link href="./Edit_files/bootstrap-theme.css" rel="stylesheet">
+    <link href="./Edit_files/layoutStyle.css" rel="stylesheet">
+
+    
+    <link href="./Edit_files/userEditStyle.css" rel="stylesheet">
+
+</head>
+<body>
+
+        <div class="smart-panel">
+            <div class="content">
+                <section class="dropdown text-center">
+                    <span class="dropdown-toggle" data-hover="dropdown" data-delay="100">Users</span>
+                    <ul class="dropdown-menu">
+                        <li><a href="http://localhost:55067/">Show all users</a></li>
+                        <li><a href="http://localhost:55067/Users/Add">Add new user</a></li>
+                        <li><a href="http://localhost:55067/Awards/Award">Award/Remove Award from users</a></li>
+                    </ul>
+                </section>
+                <section class="dropdown text-center">
+                    <span class="dropdown-toggle" data-hover="dropdown" data-delay="100">Awards</span>
+                    <ul class="dropdown-menu dropdown-menu-left">
+                        <li><a href="http://localhost:55067/Awards/Index.cshtml">Show All Awards</a></li>
+                        <li><a href="http://localhost:55067/Awards/Create">Add new award</a></li>
+                    </ul>
+                </section>
+
+
+                <section class="text-center">
+                    <span><a href="http://localhost:55067/Admin" class="tools-link">Admin's Tools</a></span>
+                </section>
+
+
+            </div>
+        </div>
+    <div class="identify">
+Admin            <a href="http://localhost:55067/Logout">Logout</a>
+    </div>
+   
+            <div class="navigate">
+                <a href="http://localhost:55067/">Go Home</a>
+            </div>
+            
+    
+
+
+
+
+
+
+
+        <div class="panel panel-danger panel-error"><span>Incorrect input.</span></div>
+
+<div class="panel panel-default panel-edit">
+    <form action="http://localhost:55067/Users/Edit" method="post" id="UserEdit" novalidate="novalidate">
+        <input type="hidden" name="id" value="1">
+        <div class="set-changes">
+            <span>What do you want to change? <span class="small">(At least 1)</span></span>
+            <label>
+                <input type="checkbox" id="NameCheckbox" value="name" name="changeList" required="" aria-required="true">
+                Name
+            </label>
+            <label>
+                <input type="checkbox" id="DateCheckbox" value="date" name="changeList" required="" aria-required="true">
+                Birth date
+            </label>
+        </div>
+        <div class="input-field">
+            <label for="NameField">Name<span>(At least 2 characters)</span></label>
+            <input id="NameField" name="newName" minlength="2" type="text" disabled="">
+        </div>
+        <div class="input-field">
+            <label for="BirthDateField">Birth date<span>(Minimum 23.05.2013)</span></label>
+            <input id="BirthDateField" name="newDate" type="date" disabled="">
+        </div>
+        <input class="btn btn-default btn-success" type="submit" value="Edit user">
+    </form>
+</div>
+    <footer class="navbar-fixed-bottom panel-footer footer"><a href="javascript:history.go(-1);">Go Back</a></footer>
+    <script src="./Edit_files/jquery-2.2.3.js"></script>
+    <script src="./Edit_files/bootstrap.js"></script>
+    <script src="./Edit_files/bootstrap-hover-dropdown.js"></script>
+    
+    <script src="./Edit_files/jquery.validate.js"></script>
+    <script src="./Edit_files/userEdit.js"></script>
+
+
+<!-- Visual Studio Browser Link -->
+<script type="application/json" id="__browserLink_initializationData">
+    {"appName":"Chrome","requestId":"9b2a4708b79b4e5b8a756974f04799cf"}
+</script>
+<script type="text/javascript" src="./Edit_files/browserLink" async="async"></script>
+<!-- End Browser Link -->
+
+
+</body></html>

@@ -1,0 +1,16 @@
+D:\VisualStudio\Projects\Task6\UsersBase.ExceptionLogger\bin\Debug\ErrorsLog.txt
+D:\VisualStudio\Projects\Task6\UsersBase.ExceptionLogger\bin\Debug\UsersBase.ExceptionLogger.dll
+D:\VisualStudio\Projects\Task6\UsersBase.ExceptionLogger\bin\Debug\UsersBase.ExceptionLogger.pdb
+D:\VisualStudio\Projects\Task6\UsersBase.ExceptionLogger\obj\Debug\UsersBase.ExceptionLogger.dll
+D:\VisualStudio\Projects\Task6\UsersBase.ExceptionLogger\obj\Debug\UsersBase.ExceptionLogger.pdb
+D:\VisualStudio\Task6\UsersBase.ExceptionLogger\bin\Debug\ErrorsLog.txt
+D:\VisualStudio\Task6\UsersBase.ExceptionLogger\bin\Debug\UsersBase.ExceptionLogger.dll
+D:\VisualStudio\Task6\UsersBase.ExceptionLogger\bin\Debug\UsersBase.ExceptionLogger.pdb
+D:\VisualStudio\Task6\UsersBase.ExceptionLogger\obj\Debug\UsersBase.ExceptionLogger.dll
+D:\VisualStudio\Task6\UsersBase.ExceptionLogger\obj\Debug\UsersBase.ExceptionLogger.pdb
+D:\VisualStudio\Task6_10\UsersBase.ExceptionLogger\bin\Debug\ErrorsLog.txt
+D:\VisualStudio\Task6_10\UsersBase.ExceptionLogger\bin\Debug\UsersBase.ExceptionLogger.dll
+D:\VisualStudio\Task6_10\UsersBase.ExceptionLogger\bin\Debug\UsersBase.ExceptionLogger.pdb
+D:\VisualStudio\Task6_10\UsersBase.ExceptionLogger\obj\Debug\UsersBase.ExceptionLogger.csprojResolveAssemblyReference.cache
+D:\VisualStudio\Task6_10\UsersBase.ExceptionLogger\obj\Debug\UsersBase.ExceptionLogger.dll
+D:\VisualStudio\Task6_10\UsersBase.ExceptionLogger\obj\Debug\UsersBase.ExceptionLogger.pdb

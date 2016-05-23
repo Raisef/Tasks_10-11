@@ -1,0 +1,91 @@
+﻿@using UsersBase.ExceptionLogger;
+@using UsersBase.Logic;
+@using UsersBase.LogicContracts;
+@using System.Configuration;
+@using System.Globalization;
+@using UsersBase.WebUI;
+
+@section styles{
+    <link href="~/Content/userAddStyle.css" rel="stylesheet" />
+}
+
+@section scripts{
+    <script src="~/scripts/jquery.validate.js"></script>
+    <script src="~/scripts/userAdd.js"></script>
+}
+@{ 
+    bool nameInputError = false;
+    bool birthDateInputError = false;
+}
+@if (IsPost)
+{
+    LogicManager logicManager;
+
+    try
+    {
+        logicManager = LogicManager.Instance;
+    }
+    catch (ConfigurationErrorsException ex)
+    {
+        ExceptionLog.LogError($"PL-{ex.Source}", $"Error in configurations: {ex.Message}", DateTime.Now);
+        <text>Critical error: Error in configuration file.</text>
+        return;
+    }
+
+    var name = Request["name"];
+    DateTime birthDate = new DateTime();
+    if (!string.IsNullOrWhiteSpace(name) &&
+        DateTime.TryParse(Request["date"], CultureInfo.CurrentCulture, DateTimeStyles.None, out birthDate) &&
+        birthDate <= DateTime.Now.AddYears(-3) && birthDate >= DateTime.Now.AddYears(-100))
+    {
+        if (logicManager.UserLogic().Create(name, birthDate) != 0)
+        {
+            Response.Redirect("~");
+            return;
+        }
+
+        Response.SetStatus(HttpStatusCode.BadRequest);
+        return;
+    }
+
+    if (string.IsNullOrWhiteSpace(name))
+    {
+        nameInputError = true;
+    }
+
+    if (birthDate.Year == 0 || birthDate > DateTime.Now.AddYears(-3) || birthDate < DateTime.Now.AddYears(-100))
+    {
+        birthDateInputError = true;
+    }
+
+}
+
+@if (nameInputError || birthDateInputError)
+{
+    if(nameInputError && birthDateInputError)
+    {
+        <div class="panel panel-danger panel-error"><span>Incorrect name & birth date input</span></div>
+    }
+    else if (!nameInputError && birthDateInputError)
+    {
+        <div class="panel panel-danger panel-error"><span>Incorrect birth date input</span></div>
+    }
+    else if (!nameInputError && !birthDateInputError)
+    {
+        <div class="panel panel-danger panel-error"><span>Incorrect name input</span></div>
+    }
+}
+
+<div class="panel panel-default panel-add">
+    <form action="~/Users/Add" method="post" id="UserAdd">
+        <div class="input-field">
+            <label for="NameField">Name<span>(At least 2 characters)</span></label>
+            <input id="NameField" name="name" minlength="2" type="text" required />
+        </div>
+        <div class="input-field">
+            <label for="BirthDateField">Birth date<span>(Minimum @DateTime.Now.AddYears(-3).ToShortDateString())</span></label>
+            <input id="BirthDateField" name="date" type="date" required />
+        </div>
+        <input class="btn btn-default btn-success" type="submit" value="Add user" />
+    </form>
+</div>

@@ -1,0 +1,91 @@
+﻿@using UsersBase.Entities;
+@using UsersBase.ExceptionLogger;
+@using UsersBase.Logic;
+@using UsersBase.LogicContracts;
+@using System.Configuration;
+@using UsersBase.WebUI;
+
+@if (!IsPost || !User.IsInRole("Admin"))
+{
+    Response.SetStatus(HttpStatusCode.NotFound);
+    return;
+}
+
+@{
+    Page.Title = "Set new role";
+
+    LogicManager logicManager;
+
+    try
+    {
+        logicManager = LogicManager.Instance;
+    }
+    catch (ConfigurationErrorsException ex)
+    {
+        ExceptionLog.LogError($"PL-{ex.Source}", $"Error in configurations: {ex.Message}", DateTime.Now);
+        return;
+    }
+
+    var login = Request["login"];
+
+    if (string.IsNullOrWhiteSpace(login))
+    {
+        Response.SetStatus(HttpStatusCode.BadRequest);
+        return;
+    }
+
+    var newRole = Request["new_role"];
+
+    if (!string.IsNullOrWhiteSpace(newRole))
+    {
+        if (logicManager.AppUserLogic().SetRole(login, newRole))
+        {
+            Response.Redirect("~/Admin");
+            return;
+        }
+        Response.SetStatus(HttpStatusCode.BadRequest);
+        return;
+    }
+
+    var currentRole = logicManager.AppUserLogic().GetRole(login);
+    if (string.IsNullOrWhiteSpace(currentRole))
+    {
+        Response.SetStatus(HttpStatusCode.BadRequest);
+        return;
+    }
+
+    var roles = logicManager.AppUserLogic().GetAllRoles();
+    if (roles == null || !roles.Any())
+    {
+        Response.SetStatus(HttpStatusCode.BadRequest);
+        return;
+    }
+}
+
+@section styles{
+    <link href="~/Content/setRoleStyle.css" rel="stylesheet" />
+}
+
+@section scripts{
+    <script src="~/scripts/awardIndex.js"></script>
+}
+<form class="new-role-form" action="~/Admin/SetRole" method="post">
+    <input type="hidden" name="login" value="@login" />
+    <span class="strong-text">The current role  is: @(currentRole).</span>
+    <span>Please choose the new role:</span>
+    <div class="new-roles">
+        @foreach (var role in roles)
+        {
+            if (role != currentRole)
+            {
+                <text><label>
+                        <input type="radio" value="@role" name="new_role" required/>
+                        <span>@role</span>
+                    </label>
+                </text>
+            }
+        }
+    </div>
+    <input class="btn btn-default" type="submit" value="Set Role"/>
+    <a href="~/Admin/" class="btn btn-default">Cancel</a>
+</form>

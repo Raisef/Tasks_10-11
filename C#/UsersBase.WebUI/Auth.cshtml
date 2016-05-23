@@ -1,0 +1,67 @@
+﻿@using UsersBase.WebUI;
+@using System.Configuration;
+@using UsersBase.ExceptionLogger;
+@{ bool failed = false; }
+@if (IsPost)
+{
+    LogicManager logicManager;
+
+    try
+    {
+        logicManager = LogicManager.Instance;
+    }
+    catch (ConfigurationErrorsException ex)
+    {
+        ExceptionLog.LogError($"PL-{ex.Source}", $"Error in configurations: {ex.Message}", DateTime.Now);
+        <text>Critical error: Error in configuration file.</text>
+        return;
+    }
+
+    var login = Request["login"];
+    var password = Request["password"];
+
+    if(string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password))
+    {
+        failed = true;
+    }
+    var user = logicManager.AppUserLogic().Get(login, password);
+    if (user != null)
+    {
+        FormsAuthentication.SetAuthCookie(login, createPersistentCookie: false);
+        var returnUrl = Request["ReturnUrl"];
+        if (string.IsNullOrWhiteSpace(returnUrl))
+        {
+            returnUrl = "~";
+        }
+        Response.Redirect(returnUrl);
+        return;
+    }
+
+    failed = true;
+}
+
+@section styles{
+    <link href="~/Content/AuthForm.css" rel="stylesheet" />
+}
+@section scripts{
+    <script src="~/scripts/authScript.js"></script>
+}
+@if (failed)
+{
+    <div class="panel panel-danger panel-error"><span>Incorrect input.</span></div>
+}
+<form class="form-2" action="~/Auth" method="post">
+    <input type="hidden" name="ReturnUrl" value="@Request["ReturnUrl"]" />
+    <h1><span class="log-in">Sign In</span></h1>
+    <p class="float">
+        <label for="login"><i class="icon-user"></i>Login</label>
+        <input type="text" name="login" placeholder="Login">
+    </p>
+    <p class="float">
+        <label for="password"><i class="icon-lock"></i>Password</label>
+        <input type="password" name="password" placeholder="Password" class="showpassword">
+    </p>
+    <p class="clearfix">
+        <input type="submit" name="submit" value="Sign In">
+    </p>
+</form>

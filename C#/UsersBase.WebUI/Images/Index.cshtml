@@ -1,0 +1,48 @@
+﻿@if (!IsPost || !User.IsInRole("Admin"))
+{
+    Response.SetStatus(HttpStatusCode.NotFound);
+    return;
+}
+
+@{ 
+    var from = Request["imageFrom"];
+    string identify;
+    if(from == null)
+    {
+        Response.SetStatus(HttpStatusCode.BadRequest);
+        return;
+    }
+    else if(from == "award")
+    {
+        identify = Request["id"];
+    }
+    else if(from == "user")
+    {
+        identify = Request["id"];
+    }
+    else if(from == "app_user")
+    {
+        identify = Request["login"];
+    }
+    else
+    {
+        Response.SetStatus(HttpStatusCode.BadRequest);
+        return;
+    }
+    
+
+}
+@section styles{
+    <link href="~/Content/imagesStyle.css" rel="stylesheet" />
+}
+<div class="upload-container">
+    <form action="~/Images/Upload" method="post" enctype="multipart/form-data" role="form">
+        <input type="hidden" name="imageFrom" value="@from" />
+        <input type="hidden" name="identify" value="@identify" />
+        <div class="form-group">
+            <label for="uploaded" class="control-label">Choose file for upload</label>
+            <input type="file" class="form-control" id="uploaded" name="uploaded" />
+        </div>
+        <button type="submit" class="btn btn-success">Upload image</button>
+    </form>
+</div>

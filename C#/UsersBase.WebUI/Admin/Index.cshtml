@@ -1,0 +1,95 @@
+﻿@using UsersBase.Entities;
+@using UsersBase.ExceptionLogger;
+@using UsersBase.Logic;
+@using UsersBase.LogicContracts;
+@using System.Configuration;
+@using System.Globalization;
+@using System.Text;
+@using UsersBase.WebUI;
+
+@if (!User.IsInRole("Admin"))
+{
+    Response.SetStatus(HttpStatusCode.NotFound);
+    return;
+}
+
+@{
+    LogicManager logicManager;
+
+    try
+    {
+        logicManager = LogicManager.Instance;
+    }
+    catch (ConfigurationErrorsException ex)
+    {
+        ExceptionLog.LogError($"PL-{ex.Source}", $"Error in configurations: {ex.Message}", DateTime.Now);
+        <text>Critical error: Error in configuration file.</text>
+        return;
+    }
+}
+
+@{
+    Page.Title = "Admin's toolbox";
+}
+
+@section styles{
+    <link href="~/Content/userIndexStyle.css" rel="stylesheet" />
+}
+
+<div class="panel panel-default">
+    <table class="table table-bordered text-center ">
+        <thead>
+            <tr>
+                <td class="user-portraits">Portraits</td>
+                <td class="user-names">Logins (Nicknames)</td>
+                <td class="user-awards">Roles</td>
+                <td class="user-actions">Actions</td>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var users = logicManager.AppUserLogic().GetAll();
+
+                if (users != null && users.Any())
+                {
+                    foreach (var user in users.OrderBy(x => x.Login != "Admin"))
+                    {
+                        <tr>
+                            <td class="portrait-box">
+                                <div class="image-sized">
+                                    <img src="~/Images/View?from=app_user&login=@user.Login" class="img-responsive img-rounded portrait" />
+                                </div>
+                            </td>
+                            <td>@(user.Login) (@user.NickName)</td>
+                            <td>@user.Role</td>
+                            <td>
+                                @if (user.Login != "Admin")
+                                {
+                                    <form class="change-role-form" action="~/Admin/SetRole" method="post">
+                                        <input type="hidden" name="login" value="@user.Login" />
+                                        <button type="submit" class="btn btn-success btn-xs" title="Change Role">
+                                            <i class="glyphicon glyphicon-transfer"></i>
+                                        </button>
+                                    </form>
+                                }
+                                <form class="add-photo-form" action="~/Images/" method="post">
+                                    <input type="hidden" name="imageFrom" value="app_user" />
+                                    <input type="hidden" name="login" value="@user.Login" />
+                                    <button type="submit" class="btn btn-primary btn-xs" title="Set photo">
+                                        <i class="glyphicon glyphicon-picture"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td>There is no users yet.</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,81 @@
+﻿@using UsersBase.ExceptionLogger;
+@using UsersBase.Logic;
+@using UsersBase.LogicContracts;
+@using System.Configuration;
+@using System.Globalization;
+@using UsersBase.WebUI;
+
+@if (!IsPost || !User.IsInRole("Admin"))
+{
+    Response.SetStatus(HttpStatusCode.NotFound);
+    return;
+}
+
+@section styles{
+    <link href="~/Content/awardEditStyle.css" rel="stylesheet" />
+}
+
+@section scripts{
+    <script src="~/scripts/jquery.validate.js"></script>
+    <script src="~/scripts/awardEdit.js"></script>
+}
+
+@{
+    LogicManager logicManager;
+
+    try
+    {
+        logicManager = LogicManager.Instance;
+    }
+    catch (ConfigurationErrorsException ex)
+    {
+        ExceptionLog.LogError($"PL-{ex.Source}", $"Error in configurations: {ex.Message}", DateTime.Now);
+        <text>Critical error: Error in configuration file.</text>
+        return;
+    }
+
+    bool inputError = false;
+
+    var stringId = Request["id"];
+    int id;
+    if (string.IsNullOrWhiteSpace(stringId) || !int.TryParse(stringId, out id) || id <= 0)
+    {
+        Response.SetStatus(HttpStatusCode.BadRequest);
+        return;
+    }
+
+    var awardName = Request["newName"];
+
+    if (awardName != null)
+    {
+        if (string.IsNullOrWhiteSpace(awardName) ||
+            awardName[0] == ' ' || awardName.EndsWith(" "))
+        {
+            if (logicManager.AwardLogic().Edit(id, awardName))
+            {
+                Response.Redirect("~/Awards/Index");
+                return;
+            }
+
+            Response.SetStatus(HttpStatusCode.NotFound);
+            return;
+        }
+        inputError = true;
+    }
+}
+
+@if (inputError)
+{
+          <div class="panel panel-danger panel-error"><span>Incorrect name input.</span></div>
+}
+
+<div class="panel panel-default">
+    <form action="~/Awards/Edit" method="post" id="AwardsEdit">
+        <input type="hidden" name="id" value="@id" />
+        <div class="input-field">
+            <label for="NameField">Name<span>(At least 2 characters)</span></label>
+            <input id="NameField" name="newName" minlength="2" type="text" required/>
+        </div>
+        <input class="btn btn-default btn-success" type="submit" value="Edit user" />
+    </form>
+</div>

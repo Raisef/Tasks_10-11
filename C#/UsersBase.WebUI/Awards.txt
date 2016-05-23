@@ -1,0 +1,4 @@
+﻿4|gold|4|anton,!,3|julia
+5|power|2|ann,!,4|anton
+6|Awesomness|1|Hey,!,4|anton
+7|power|

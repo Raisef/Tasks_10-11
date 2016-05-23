@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>@Page.Title</title>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-theme.css" rel="stylesheet" />
+    <link href="~/Content/layoutStyle.css" rel="stylesheet" />
+
+    @RenderSection("styles", required: false)
+</head>
+<body>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="smart-panel">
+            <div class="content">
+                <section class="dropdown text-center">
+                    <span class="dropdown-toggle" data-hover="dropdown" data-delay="100">Users</span>
+                    <ul class="dropdown-menu">
+                        <li><a href="~/">Show all users</a></li>
+                        <li><a href="~/Users/Add">Add new user</a></li>
+                        <li><a href="~/Awards/Award">Award/Remove Award from users</a></li>
+                    </ul>
+                </section>
+                <section class="dropdown text-center">
+                    <span class="dropdown-toggle" data-hover="dropdown" data-delay="100">Awards</span>
+                    <ul class="dropdown-menu dropdown-menu-left">
+                        <li><a href="~/Awards/Index.cshtml">Show All Awards</a></li>
+                        <li><a href="~/Awards/Create">Add new award</a></li>
+                    </ul>
+                </section>
+
+
+                <section class="text-center">
+                    <span><a href="~/Admin" class="tools-link">Registered Users</a></span>
+                </section>
+
+
+            </div>
+        </div>
+    }
+    <div class="identify">
+        @if (User.Identity.IsAuthenticated)
+        {
+            @User.Identity.Name
+            <a href="~/Logout">Logout</a>
+        }
+        else
+        {
+            <a href="~/SignUp">Sign Up</a>
+            <a href="~/Auth">Sign In</a>
+        }
+    </div>
+   
+        @if (Request.Url.LocalPath != "/")
+        {
+            <div class="navigate">
+                <a href="~/">Go Home</a>
+            </div>
+        }
+            
+    @RenderBody()
+    <script src="~/scripts/jquery-2.2.3.js"></script>
+    <script src="~/scripts/bootstrap.js"></script>
+    <script src="~/scripts/bootstrap-hover-dropdown.js"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

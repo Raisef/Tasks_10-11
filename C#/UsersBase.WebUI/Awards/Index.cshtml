@@ -1,0 +1,136 @@
+﻿@using UsersBase.Entities;
+@using UsersBase.ExceptionLogger;
+@using UsersBase.Logic;
+@using UsersBase.LogicContracts;
+@using System.Configuration;
+@using System.Globalization;
+@using System.Text;
+@using UsersBase.WebUI;
+
+@if (!User.IsInRole("Admin"))
+{
+    Response.SetStatus(HttpStatusCode.NotFound);
+    return;
+}
+
+@{
+    LogicManager logicManager;
+
+    try
+    {
+        logicManager = LogicManager.Instance;
+    }
+    catch (ConfigurationErrorsException ex)
+    {
+        ExceptionLog.LogError($"PL-{ex.Source}", $"Error in configurations: {ex.Message}", DateTime.Now);
+        <text>Critical error: Error in configuration file.</text>
+        return;
+    }
+}
+
+@{
+    Page.Title = "Awards Base";
+}
+
+@section styles{
+    <link href="~/Content/awardIndexStyle.css" rel="stylesheet" />
+}
+
+@section scripts{
+    <script src="~/scripts/awardIndex.js"></script>
+    }
+
+<div class="panel panel-default">
+    <table class="table table-bordered text-center">
+        <thead>
+            <tr>
+                <td class="award-portraits"></td>
+                <td class="award-names">Name</td>
+                <td class="awarded-users">Awarded users</td>
+                <td class="award-actions">Actions</td>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var awards = logicManager.AwardLogic().GetAll();
+
+
+                if (awards != null && awards.Any())
+                {
+                    var users = logicManager.UserLogic().GetAll();
+
+                    foreach (var award in awards.OrderBy(award => award.Id))
+                    {
+
+                        <tr>
+                            <td>
+                                <div class="image-sized">
+                                    <img src="~/Images/View?from=award&id=@award.Id" class="img-responsive img-rounded portrait" />
+                                </div>  
+                            </td>
+                            <td>@award.Name</td>
+                            <td>
+                                @{
+
+                                    if (award.Owners == null || award.Owners.Count == 0)
+                                    {
+                                        <div class="no-awards"><span>"No awarded users."</span></div>
+                                    }
+                                    else
+                                    {
+                                        foreach (var user in award.Owners)
+                                        {
+                                            var awardedUser = users.FirstOrDefault(x => x.Id == user.Key);
+                                            if (awardedUser != null)
+                                            {
+                                                <div class="awarded-user-box">
+                                                    <img src="~/Images/View?from=user&id=@awardedUser.Id" class="img-responsive img-rounded user" />
+                                                    <span>@awardedUser.Name</span>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="no-awarded-users"><span>"No awarded users."</span></div>
+                                            }
+                                        }
+                                    }
+                                }
+                            </td>
+                            <td>
+                                <form class="delete-form" action="~/Awards/Delete" method="post">
+                                    <input type="hidden" name="id" value="@award.Id" />
+                                    <button class="btn btn-danger btn-xs delete-button" type="button"  title="Delete">
+                                        <i class="glyphicon glyphicon-remove"></i>
+                                    </button>
+                                </form>
+                                <form class="edit-form" action="~/Awards/Edit" method="post">
+                                    <input type="hidden" name="id" value="@award.Id" />
+                                    <input type="hidden" name="name" value="@award.Name " />
+                                    <button type="submit" class="btn btn-success btn-xs"  title="Edit">
+                                        <i class="glyphicon glyphicon-edit"></i>
+                                    </button>
+                                </form>
+                                <form class="add-photo-form" action="~/Images/" method="post">
+                                    <input type="hidden" name="imageFrom" value="award" />
+                                    <input type="hidden" name="id" value="@award.Id" />
+                                    <button type="submit" class="btn btn-primary btn-xs"  title="Set image">
+                                        <i class="glyphicon glyphicon-picture"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr class="bg-danger">
+                        <td>There</td>
+                        <td>is</td>
+                        <td>no awards</td>
+                        <td>yet.</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

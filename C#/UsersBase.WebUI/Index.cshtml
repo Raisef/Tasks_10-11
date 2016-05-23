@@ -1,0 +1,138 @@
+﻿@using UsersBase.Entities;
+@using UsersBase.ExceptionLogger;
+@using UsersBase.Logic;
+@using UsersBase.LogicContracts;
+@using System.Configuration;
+@using System.Globalization;
+@using System.Text;
+@using UsersBase.WebUI;
+
+@{
+    Page.Title = "Users Base";
+}
+
+@section styles{
+    <link href="~/Content/userIndexStyle.css" rel="stylesheet" />
+}
+
+@{
+    LogicManager logicManager;
+
+    try
+    {
+        logicManager = LogicManager.Instance;
+    }
+    catch (ConfigurationErrorsException ex)
+    {
+        ExceptionLog.LogError($"PL-{ex.Source}", $"Error in configurations: {ex.Message}", DateTime.Now);
+        <text>Critical error: Error in configuration file.</text>
+        return;
+    }
+}
+
+
+
+
+<div class="panel panel-default">
+    <table class="table table-bordered text-center ">
+        <thead>
+            <tr>
+                <td class="user-portraits">Portraits</td>
+                <td class="user-names">Name</td>
+                <td class="user-dates">Birth Date (Age)</td>
+                @if (User.IsInRole("User") || User.IsInRole("Admin"))
+                {
+                    <td class="user-awards">Awards</td>
+                }
+                @if (User.IsInRole("Admin"))
+                {
+                    <td class="user-actions">Actions</td>
+                }
+
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var users = logicManager.UserLogic().GetAll();
+
+                if (users != null && users.Any())
+                {
+                    var awards = logicManager.AwardLogic().GetAll();
+                    if (awards != null || awards.Any())
+                    {
+                        foreach (var user in users.OrderBy(user => user.Id))
+                        {
+                            <tr>
+                                <td class="portrait-box">
+                                    <div class="image-sized">
+                                        <img src="~/Images/View?from=user&id=@user.Id" class="img-responsive img-rounded portrait" />
+                                    </div>
+                                </td>
+                                <td>@user.Name</td>
+                                <td>@(user.BirthDate.ToShortDateString()) (@user.Age())</td>
+                                @if (User.IsInRole("User") || User.IsInRole("Admin"))
+                                {
+                                    <td>
+                                        @{
+                                            var awardedUser = user as AwardedUser;
+                                            if (awardedUser?.Awards == null || !awardedUser.Awards.Any())
+                                            {
+                                                <div class="no-awards"><span>"No awards"</span></div>
+                                            }
+                                            else
+                                            {
+                                                foreach (var award in awardedUser.Awards)
+                                                {
+                                                    var userAward = awards.FirstOrDefault(x => x.Name == award);
+                                                    if (userAward != null)
+                                                    {
+                                                        <div class="user-award-box">
+                                                            <img src="~/Images/View?from=award&id=@userAward.Id" title="@userAward.Name" class="img-responsive img-rounded award" />
+                                                        </div>
+                                                    }
+                                                }
+                                            }
+                                        }
+
+
+                                    </td>
+                                            }
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <td>
+                                        <form class="delete-form" action="~/Users/Delete" method="post">
+                                            <input type="hidden" name="id" value="@user.Id" />
+                                            <button type="submit" class="btn btn-danger btn-xs" title="Delete">
+                                                <i class="glyphicon glyphicon-remove"></i>
+                                            </button>
+                                        </form>
+                                        <form class="edit-form" action="~/Users/Edit" method="post">
+                                            <input type="hidden" name="id" value="@user.Id" />
+                                            <button type="submit" class="btn btn-success btn-xs" title="Edit">
+                                                <i class="glyphicon glyphicon-edit"></i>
+                                            </button>
+                                        </form>
+                                        <form class="add-photo-form" action="~/Images/" method="post" title="Set photo">
+                                            <input type="hidden" name="imageFrom" value="user" />
+                                            <input type="hidden" name="id" value="@user.Id" />
+                                            <button type="submit" class="btn btn-primary btn-xs">
+                                                <i class="glyphicon glyphicon-picture"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                }
+
+                            </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td>There is no users yet.</td>
+                                                </tr>
+                                                }
+                                            }
+            }
+        </tbody>
+    </table>
+</div>

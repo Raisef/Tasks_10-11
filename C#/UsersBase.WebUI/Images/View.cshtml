@@ -1,0 +1,81 @@
+﻿@using UsersBase.WebUI;
+@{LogicManager logicManager = LogicManager.Instance;
+
+    var from = Request["from"];
+    switch (from)
+    {
+        case "user":
+            {
+                string stringId = Request["id"];
+                int id;
+                if (string.IsNullOrWhiteSpace(stringId) || !int.TryParse(stringId, out id))
+                {
+                    Response.ContentType = "image/png";
+                    Response.WriteFile("~/Content/Images/noimage.png");
+                    Response.AddHeader("Content - Disposition", $"inline; filename =\"noimage.jpg\"");
+                    break;
+                }
+                var image = logicManager.UserLogic().GetImage(id);
+                if (image == null)
+                {
+                    Response.ContentType = "image/png";
+                    Response.WriteFile("~/Content/Images/noimage.png");
+                    Response.AddHeader("Content - Disposition", $"inline; filename =\"noimage.png\"");
+                    break;
+                }
+                var imageType = logicManager.UserLogic().GetImageType(id);
+                Response.WriteBinary(image, imageType);
+                Response.AddHeader("Content - Disposition", $"inline; filename =\"{stringId}.jpg\"");
+            }
+            break;
+
+        case "award":
+            {
+                string stringId = Request["id"];
+                int id;
+                if (string.IsNullOrWhiteSpace(stringId) || !int.TryParse(stringId, out id))
+                {
+                    Response.SetStatus(HttpStatusCode.BadRequest);
+                    return;
+                }
+                var image = logicManager.AwardLogic().GetImage(id);
+                if (image == null)
+                {
+                    Response.ContentType = "image/png";
+                    Response.WriteFile("~/Content/Images/noimage-award.png");
+                    Response.AddHeader("Content - Disposition", $"inline; filename =\"noimage.png\"");
+                    break;
+                }
+                var imageType = logicManager.AwardLogic().GetImageType(id);
+                Response.WriteBinary(image, imageType);
+                Response.AddHeader("Content - Disposition", $"inline; filename =\"{stringId}.jpg\"");
+            }
+            break;
+
+        case "app_user":
+            {
+                string login = Request["login"];
+                if (string.IsNullOrWhiteSpace(login))
+                {
+                    Response.SetStatus(HttpStatusCode.BadRequest);
+                    return;
+                }
+                var image = logicManager.AppUserLogic().GetImage(login);
+                if (image == null)
+                {
+                    Response.ContentType = "image/png";
+                    Response.WriteFile("~/Content/Images/noimage-award.png");
+                    Response.AddHeader("Content - Disposition", $"inline; filename =\"noimage.png\"");
+                    break;
+                }
+                var imageType = logicManager.AppUserLogic().GetImageType(login);
+                Response.WriteBinary(image, imageType);
+                Response.AddHeader("Content - Disposition", $"inline; filename =\"{login}.jpg\"");
+            }
+            break;
+
+        default:
+            Response.SetStatus(HttpStatusCode.BadRequest);
+            return;
+    }
+}

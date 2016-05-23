@@ -1,0 +1,67 @@
+.panel{
+    width: 900px;
+    margin: 100px auto;
+    text-align:center;
+    background-color: white;
+    box-shadow: 0 4px 100px 1px;
+}
+
+.panel form{
+    display: inline-block;
+}
+
+.btn-sunshine{
+    background-color: gold;
+    color: white;
+}
+
+.btn-sunshine:hover{
+    background-color: goldenrod;
+    color: white;   
+}
+
+.btn-sunshine:active{
+    background-color: darkgoldenrod;
+    color: white;
+}
+
+.btn-sunshine:focus{
+    color: white;
+}
+
+.user-award-box{
+    display:inline-block;
+    height: 30px;
+}
+
+.user-awards{
+    width:100px;
+}
+
+.user-actions{
+    width: 150px;
+}
+
+.user-portraits{
+    width: 150px;
+}
+
+.portrait-box{    
+    height: 150px;
+}
+
+.user-dates{
+    width: 130px;
+}
+
+.user-names{
+    width: 60px;
+}
+.portrait{
+    max-height: 145px;
+    margin:0 auto; 
+}
+
+.award{
+    max-height: 30px;
+}

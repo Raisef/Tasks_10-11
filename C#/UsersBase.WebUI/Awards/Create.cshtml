@@ -1,0 +1,67 @@
+﻿@using UsersBase.ExceptionLogger;
+@using System.Configuration;
+@using UsersBase.WebUI;
+
+@if (!User.IsInRole("Admin"))
+{
+    Response.SetStatus(HttpStatusCode.NotFound);
+    return;
+}
+
+
+@section styles{
+    <link href="~/Content/awardCreateStyle.css" rel="stylesheet" />
+}
+
+@section scripts{
+    <script src="~/scripts/jquery.validate.js"></script>
+    <script src="~/scripts/awardCreate.js"></script>
+}
+@{ bool inputError = false; }
+
+@if (IsPost)
+{
+    LogicManager logicManager;
+
+    try
+    {
+        logicManager = LogicManager.Instance;
+    }
+    catch (ConfigurationErrorsException ex)
+    {
+        ExceptionLog.LogError($"PL-{ex.Source}", $"Error in configurations: {ex.Message}", DateTime.Now);
+        <text>Critical error: Error in configuration file.</text>
+        return;
+    }
+
+    var name = Request["name"];
+
+    if (!string.IsNullOrWhiteSpace(name))
+    {
+
+        if (logicManager.AwardLogic().Create(name) != 0)
+        {
+            Response.Redirect("~/Awards/Index");
+            return;
+        }
+        Response.SetStatus(HttpStatusCode.BadRequest);
+        return;
+    }
+
+    inputError = true;
+
+}
+@if (inputError)
+{
+  
+        <div class="panel panel-danger panel-error"><span>Incorrect name input</span></div>
+}
+<div class="panel panel-default">
+    <form action="~/Awards/Create" method="post" id="AwardCreate">
+        <div class="input-field">
+            <label for="NameField">Name<span>(At least 2 characters)</span></label>
+            <input id="NameField" name="name" minlength="2" type="text" required />
+        </div>
+        <input class="btn btn-default btn-success" type="submit" value="Add user" />
+    </form>
+</div>
